@@ -4,26 +4,26 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 
 import com.example.contactapppam6.database.ContactModel;
 import com.example.contactapppam6.repository.ContactRepository;
 
-import java.util.List;
-
-public class ContactViewModel extends AndroidViewModel {
+public class InsertUpdateViewModel extends AndroidViewModel {
     private ContactRepository repository;
-    private LiveData<List<ContactModel>> allContacts;
 
-    public ContactViewModel(@NonNull Application application){
+    public InsertUpdateViewModel(@NonNull Application application){
         super(application);
         repository = new ContactRepository(application);
-        allContacts = repository.getAllContacts();
     }
 
-    public LiveData<List<ContactModel>> getAllContacts(){
-        return repository.getAllContacts();
+    public void insert(ContactModel contactModel){
+        repository.insert(contactModel);
     }
 
-
+    public void update(ContactModel contactModel){
+        repository.update(contactModel);
+    }
+    public void delete(ContactModel contactModel){
+        repository.delete(contactModel);
+    }
 }

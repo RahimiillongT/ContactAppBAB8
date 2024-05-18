@@ -6,11 +6,12 @@ import android.os.Parcelable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+import androidx.room.Insert;
 import androidx.room.PrimaryKey;
 
 @Entity (tableName = "contacts")
 public class ContactModel implements Parcelable {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name="id")
     private int id;
     @ColumnInfo(name="name")
@@ -21,6 +22,17 @@ public class ContactModel implements Parcelable {
     private String group;
     @ColumnInfo(name="instagram")
     private String instagram;
+
+    public ContactModel(String name, String number, String group, String instagram){
+        this.name = name;
+        this.number = number;
+        this.group = group;
+        this.instagram = instagram;
+    }
+
+    @Ignore
+    public ContactModel() {
+    }
 
     public int getId(){
         return id;
@@ -71,15 +83,6 @@ public class ContactModel implements Parcelable {
         dest.writeString(this.number);
         dest.writeString(this.group);
         dest.writeString(this.instagram);
-    }
-    @Ignore
-    public ContactModel(){
-    }
-    public ContactModel(String name, String number, String group, String instagram){
-        this.name = name;
-        this.number = number;
-        this.group = group;
-        this.instagram = instagram;
     }
 
     private ContactModel(Parcel in) {

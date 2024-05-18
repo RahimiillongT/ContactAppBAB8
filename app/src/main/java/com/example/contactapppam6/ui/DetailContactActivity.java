@@ -16,11 +16,14 @@ import androidx.core.view.WindowInsetsCompat;
 import android.Manifest;
 
 import com.example.contactapppam6.R;
+import com.example.contactapppam6.database.ContactModel;
 import com.example.contactapppam6.databinding.ActivityDetailContactBinding;
 
 public class DetailContactActivity extends AppCompatActivity {
 
-    private ActivityDetailContactBinding binding;
+    ActivityDetailContactBinding binding;
+    public static final String EXTRA_CONTACT = "extra_contact";
+    ContactModel contactModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,42 +35,49 @@ public class DetailContactActivity extends AppCompatActivity {
 
         if (getIntent().getExtras() != null){
             Bundle bundle = getIntent().getExtras();
-            String getCName = bundle.getString("cname");
-            String getCNumber = bundle.getString("cnumber");
-            String getCInstagram = bundle.getString("cinstagram");
-            String getCGroup = bundle.getString("cgroup");
+            contactModel = bundle.getParcelable(EXTRA_CONTACT);
 
-            binding.tvName.setText(getCName);
-            binding.tvNumber.setText(getCNumber);
-            binding.tvInstagram.setText(getCInstagram);
-            binding.tvGroup.setText(getCGroup);
+            if (contactModel != null){
+                binding.tvName.setText(contactModel.getName());
+                binding.tvNumber.setText(contactModel.getNumber());
+                binding.tvInstagram.setText(contactModel.getInstagram());
+                binding.tvGroup.setText(contactModel.getGroup());
+            }
 
             binding.btnCall.setOnClickListener(v -> {
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:" + getCNumber));
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 1);
-                    return;
+                if (contactModel != null){
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:" + contactModel.getNumber()));
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 1);
+                        return;
+                    }
+                    startActivity(intent);
                 }
-                startActivity(intent);
             });
 
             binding.btnMessage.setOnClickListener(v -> {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("sms:" + getCNumber));
-                startActivity(intent);
+                if (contactModel != null) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("sms:" + contactModel.getNumber()));
+                    startActivity(intent);
+                }
             });
 
             binding.layoutWhatsapp.setOnClickListener(v -> {
-                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.setPackage("com.whatsapp");
-                String url = "https://api.whatsapp.com/send?phone=" + getCNumber;
-                sendIntent.setData(Uri.parse(url));
-                startActivity(sendIntent);
+                if (contactModel != null) {
+                    Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                    sendIntent.setPackage("com.whatsapp");
+                    String url = "https://api.whatsapp.com/send?phone=" + contactModel.getNumber();
+                    sendIntent.setData(Uri.parse(url));
+                    startActivity(sendIntent);
+                }
             });
 
             binding.btnInstagram.setOnClickListener(v -> {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://instagram.com/" + getCInstagram)));
+                if (contactModel != null) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://instagram.com/" + contactModel.getInstagram())));
+                }
             });
         }
 

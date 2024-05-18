@@ -25,18 +25,18 @@ public class ContactRepository {
     }
 
     public LiveData<List<ContactModel>> getAllContacts(){
-        return allContacts;
+        return contactDAO.getAllContacts();
     }
 
-    public void insert(ContactModel contactModel){
+    public void insert(final ContactModel contactModel){
         executorService.execute(()-> contactDAO.insert(contactModel));
     }
 
-    public void delete(ContactModel contactModel){
+    public void delete(final ContactModel contactModel){
         executorService.execute(()-> contactDAO.delete(contactModel));
     }
 
-    public void update(ContactModel contactModel){
+    public void update(final ContactModel contactModel){
         executorService.execute(()-> contactDAO.update(contactModel));
     }
 
